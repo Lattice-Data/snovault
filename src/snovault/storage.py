@@ -119,7 +119,7 @@ class RDBStorage(object):
                     if link.rel == rel and link.source.item_type in item_types:
                         return_list.append(link.source_rid)
                 except QueryCanceledError as ecp:
-                    print('BB14812', cnt)
+                    print('BB14810', cnt)
                     print(model)
                     print(repr(ecp))
         else:
@@ -129,9 +129,10 @@ class RDBStorage(object):
                     if link.rel == rel:
                         return_list.append(link.source_rid)
                 except QueryCanceledError as ecp:
-                    print('BB14810', cnt)
+                    print('BB14811', cnt)
                     print(model)
                     print(repr(ecp))
+        print('BB14812', cnt)
         return return_list
 
     def __iter__(self, *item_types):
