@@ -110,12 +110,29 @@ class RDBStorage(object):
             return key.resource
 
     def get_rev_links(self, model, rel, *item_types):
+        return_list = []
+        cnt = 0
         if item_types:
-            return [
-                link.source_rid for link in model.revs
-                if link.rel == rel and link.source.item_type in item_types]
+            for link in model.revs:
+                cnt += 1
+                try:
+                    if link.rel == rel and link.source.item_type in item_types:
+                        return_list.append(link.source_rid)
+                except QueryCanceledError as ecp:
+                    print('BB14812', cnt)
+                    print(model)
+                    print(repr(ecp))
         else:
-            return [link.source_rid for link in model.revs if link.rel == rel]
+            for link in model.revs:
+                cnt += 1
+                try:
+                    if link.rel == rel:
+                        return_list.append(link.source_rid)
+                except QueryCanceledError as ecp:
+                    print('BB14810', cnt)
+                    print(model)
+                    print(repr(ecp))
+        return return_list
 
     def __iter__(self, *item_types):
         session = self.DBSession()
