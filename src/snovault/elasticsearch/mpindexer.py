@@ -183,6 +183,7 @@ class MPIndexer(Indexer):
                 update_infos.append(update_info)
                 error = update_info.get('error')
                 if error is not None:
+                    print('Update info', update_info)
                     print('Error', error)
                     errors.append(error)
                 if (i + 1) % 1000 == 0:

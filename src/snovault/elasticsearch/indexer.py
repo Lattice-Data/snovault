@@ -7,6 +7,7 @@ from elasticsearch.exceptions import (
 from pyramid.view import view_config
 from pyramid.settings import asbool
 from sqlalchemy.exc import StatementError
+from psycopg2.extensions import QueryCanceledError
 from snovault import (
     COLLECTIONS,
     DBSESSION,
@@ -659,6 +660,17 @@ class Indexer(object):
                         {
                             'msg': msg,
                             'last_exc': None,
+                        }
+                    )
+                    do_break = True
+                except QueryCanceledError as ecp:
+                    msg = 'QueryCanceledError indexing %s' % (uuid)
+                    log.error(msg, exc_info=True)
+                    last_exc = repr(e)
+                    backoff_info['error'].append(
+                        {
+                            'msg': msg,
+                            'last_exc': last_exc,
                         }
                     )
                     do_break = True
