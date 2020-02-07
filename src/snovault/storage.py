@@ -1,4 +1,6 @@
 from pyramid.httpexceptions import HTTPConflict
+from psycopg2.extensions import QueryCanceledError
+
 from sqlalchemy import (
     Column,
     DDL,
@@ -99,6 +101,10 @@ class RDBStorage(object):
         try:
             key = baked_query_unique_key(session).params(name=unique_key, value=name).one()
         except NoResultFound:
+            return default
+        except QueryCanceledError as ecp:
+            print(unique_key, name, default, index)
+            print(repr(ecp))
             return default
         else:
             return key.resource
