@@ -362,8 +362,13 @@ class Indexer(object):
     def check_log_indexing_times(self, update_infos):
         if self.indexer_initial_log and not os.path.exists(self.indexer_initial_log_path):
             log.warning('Logging indexing data to %s', self.indexer_initial_log_path)
+            counter = 0
             with open(self.indexer_initial_log_path, 'w', encoding='utf-8') as file_handler:
-                json.dump(update_infos, file_handler, ensure_ascii=False)
+                for update_info in update_infos:
+                    str_update_info = json.dump(update_info, ensure_ascii=False)
+                    file_handler.write(str_update_info)
+                    counter += 1
+            log.warning('Logged %d uuids.  One per line' % counter)
 
     def _setup_queues(self, registry):
         '''Init helper - Setup server and worker queues'''
