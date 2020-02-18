@@ -367,7 +367,7 @@ class Indexer(object):
                 for update_info in update_infos:
                     json.dump(update_info, file_handler, ensure_ascii=False)
                     counter += 1
-            log.warning('Logged %d uuids.  One per line' % counter)
+            log.warning('Logged %d uuids.  One per line %d' % counter)
 
     def _setup_queues(self, registry):
         '''Init helper - Setup server and worker queues'''
