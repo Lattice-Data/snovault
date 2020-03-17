@@ -8,7 +8,10 @@ def includeme(config):
 
 
 def get_root_request():
-    if threadlocal_manager.stack:
+    if threadlocal_manager.stack and threadlocal_manager.stack[0].get('request'):
+        while not hasattr(threadlocal_manager.stack[0]['request'], '_stats'):
+            bad_req = threadlocal_manager.stack.pop(0)
+            print('sno.util:get_root_request(Popped bad req):', bad_req)
         return threadlocal_manager.stack[0]['request']
 
 
