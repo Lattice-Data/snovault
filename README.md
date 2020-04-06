@@ -2,8 +2,8 @@ SnoVault JSON-LD Database Framework
 ===================================
 
 ## System Installation (OSX Catlina~10.15.2, Mojave~10.14.6)
-    We will try to keep this updated as OSX, Xcode, and brew update.  Howere, The steps below are 
-    not guaranteed to work for your specific system.  See the dependency's website for 
+    We will try to keep this updated as OSX, Xcode, and brew update.  However the steps below are
+    examples and not guaranteed to work for your specific system.  See the dependency's website for
     detailed instructions or let us know of any changes with a pull request.
 
 1. Command line tools
