@@ -8,6 +8,7 @@ import json
 import codecs
 import collections
 import copy
+import re
 from jsonschema_serialize_fork import (
     Draft4Validator,
     FormatChecker,
@@ -281,6 +282,18 @@ def notSubmittable(validator, linkTo, instance, schema):
     yield ValidationError('submission disallowed')
 
 
+# modifying https://github.com/lrowe/jsonschema_serialize_fork/blob/master/jsonschema_serialize_fork/_validators.py#L143
+def pattern(validator, patrn, instance, schema):
+    if isinstance(patrn, list):
+        patrn = ''.join(patrn)
+
+    if (
+        validator.is_type(instance, "string") and
+        not re.search(patrn, instance)
+    ):
+        yield ValidationError("%r does not match %r" % (instance, patrn))
+
+
 class SchemaValidator(Draft4Validator):
     VALIDATORS = Draft4Validator.VALIDATORS.copy()
     VALIDATORS['notSubmittable'] = notSubmittable
@@ -291,6 +304,7 @@ class SchemaValidator(Draft4Validator):
     VALIDATORS['permission'] = permission
     VALIDATORS['requestMethod'] = requestMethod
     VALIDATORS['uniqueItems'] = uniqueItems
+    VALIDATORS['pattern'] = pattern
     VALIDATORS['validators'] = validators
     SERVER_DEFAULTS = SERVER_DEFAULTS
 
@@ -317,7 +331,8 @@ def load_schema(filename):
 
 def validate(schema, data, current=None):
     resolver = NoRemoteResolver.from_schema(schema)
-    sv = SchemaValidator(schema, resolver=resolver, serialize=True, format_checker=format_checker)
+    sv = SchemaValidator(schema, resolver=resolver,
+                         serialize=True, format_checker=format_checker)
     validated, errors = sv.serialize(data)
 
     filtered_errors = []
@@ -374,7 +389,9 @@ def combine_schemas(a, b):
         if a[name] == b[name]:
             combined[name] = a[name]
         elif name == 'type':
-            combined[name] = sorted(set(ensurelist(a[name]) + ensurelist(b[name])))
+            combined[name] = sorted(
+                set(ensurelist(a[name]) + ensurelist(b[name]))
+            )
         elif name == 'properties':
             combined[name] = {}
             for k in set(a[name].keys()).intersection(b[name].keys()):
