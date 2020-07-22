@@ -390,7 +390,8 @@ def combine_schemas(a, b):
             combined[name] = a[name]
         elif name == 'type':
             combined[name] = sorted(
-                set(ensurelist(a[name]) + ensurelist(b[name])))
+                set(ensurelist(a[name]) + ensurelist(b[name]))
+            )
         elif name == 'properties':
             combined[name] = {}
             for k in set(a[name].keys()).intersection(b[name].keys()):
