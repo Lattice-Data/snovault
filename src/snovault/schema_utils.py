@@ -294,7 +294,6 @@ def pattern(validator, patrn, instance, schema):
         yield ValidationError("%r does not match %r" % (instance, patrn))
 
 
-
 class SchemaValidator(Draft4Validator):
     VALIDATORS = Draft4Validator.VALIDATORS.copy()
     VALIDATORS['notSubmittable'] = notSubmittable
@@ -332,7 +331,8 @@ def load_schema(filename):
 
 def validate(schema, data, current=None):
     resolver = NoRemoteResolver.from_schema(schema)
-    sv = SchemaValidator(schema, resolver=resolver, serialize=True, format_checker=format_checker)
+    sv = SchemaValidator(schema, resolver=resolver,
+                         serialize=True, format_checker=format_checker)
     validated, errors = sv.serialize(data)
 
     filtered_errors = []
@@ -389,7 +389,8 @@ def combine_schemas(a, b):
         if a[name] == b[name]:
             combined[name] = a[name]
         elif name == 'type':
-            combined[name] = sorted(set(ensurelist(a[name]) + ensurelist(b[name])))
+            combined[name] = sorted(
+                set(ensurelist(a[name]) + ensurelist(b[name])))
         elif name == 'properties':
             combined[name] = {}
             for k in set(a[name].keys()).intersection(b[name].keys()):
