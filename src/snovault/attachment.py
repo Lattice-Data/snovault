@@ -6,6 +6,7 @@ from mimetypes import guess_type
 from PIL import Image
 from pyramid.httpexceptions import (
     HTTPNotFound,
+    HTTPTemporaryRedirect,
 )
 from pyramid.response import Response
 from pyramid.traversal import find_root
@@ -265,7 +266,7 @@ def download(context, request):
     accel_redirect_header = request.registry.settings.get('accel_redirect_header')
     if hasattr(blob_storage, 'get_blob_url') and accel_redirect_header:
         blob_url = blob_storage.get_blob_url(download_meta)
-        return InternalRedirect(headers={accel_redirect_header: '/_proxy/' + str(blob_url)})
+        raise HTTPTemporaryRedirect(str(blob_url))
 
     # Otherwise serve the blob data ourselves
     blob = request.registry[BLOBS].get_blob(download_meta)
