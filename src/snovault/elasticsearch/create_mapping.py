@@ -446,6 +446,7 @@ def type_mapping(types, item_type, embed=True):
 
             # Check if mapping for property is already an object
             # multiple subobjects may be embedded, so be carful here
+            print(m['properties'])
             if m['properties'][p]['type'] in ['keyword', 'text']:
                 m['properties'][p] = schema_mapping(p, s)
 
